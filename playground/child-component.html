@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <component1 v-bind:propsdata='message'></component1>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        Vue.component('component1', {
+            template: '<component2 v-bind:propsdata="propsdata"></component2>',
+            props: ['propsdata']
+        });
+
+        Vue.component('component2', {
+            template: '<h2>{{propsdata}}</h2>',
+            props: ['propsdata']
+        });
+
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello~Vue!!'
+            }
+        });
+    </script>
+</body>
+</html>
