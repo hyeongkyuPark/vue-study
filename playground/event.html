@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <event-btn v-on:show-log='printLog'></event-btn>
+    </div>
+    <div id="app2">
+        <event-btn2 v-on:send-message='saveMessage'></event-btn2>
+        <result-box v-bind:propsdata='sendMessage'></result-box>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        let evnetBus = new Vue();
+
+        let eventBtn = {
+            template: '<button v-on:click="showLog">emit 사용하여 로그 발생</button>',
+            methods: {
+                showLog: function () {
+                    this.$emit('show-log');
+                    evnetBus.$emit('triggerEventBus', '가로채기');
+                }
+            }
+        }
+
+        let eventBtn2 = {
+            template: '<button v-on:click="sendMessage">emit 사용하여 같은 레벨 메세지 전송</button>',
+            methods: {
+                sendMessage: function () {
+                    this.$emit('send-message', '같은 레벨 메세지 전송');
+                }
+            }
+        }
+
+        let resultBox = {
+            template: '<h2>{{propsdata}}</h2>',
+            props: ['propsdata']
+        }
+
+        new Vue({
+            el: '#app',
+            components: {
+                'event-btn': eventBtn
+            },
+            methods: {
+                printLog: function () {
+                    console.log("이벤트 수신 완료");
+                }
+            }
+        });
+
+        new Vue({
+            el: '#app2',
+            components: {
+                'event-btn2': eventBtn2,
+                'result-box': resultBox
+            },
+            data: {
+                sendMessage: ''
+            },
+            methods: {
+                saveMessage: function (value) {
+                    this.sendMessage = value;
+                    evnetBus.$on('triggerEventBus', function (sendValue) {
+                        console.log(sendValue);
+                    });
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
